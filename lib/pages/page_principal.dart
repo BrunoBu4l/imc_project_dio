@@ -17,7 +17,7 @@ class _MainPageState extends State<PagePrincipal> {
   var imcRepository = ImcRepository();
   var _imcs = const <Imc>[];
   double calcular = 0;
-  var classif;
+
   @override
   void initState() {
     super.initState();
