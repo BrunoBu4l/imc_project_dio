@@ -16,7 +16,8 @@ class _MainPageState extends State<PagePrincipal> {
 
   var imcRepository = ImcRepository();
   var _imcs = const <Imc>[];
-
+  double calcular = 0;
+  var classif;
   @override
   void initState() {
     super.initState();
@@ -41,12 +42,12 @@ class _MainPageState extends State<PagePrincipal> {
                       title: const Text("Adicionar IMC"),
                       content: Wrap(
                         children: [
-                          const Text("Altura: "),
+                          const Text("Altura em 0.00"),
                           TextField(
                             controller: alturaController,
                             keyboardType: TextInputType.number,
                           ),
-                          const Text("Peso:"),
+                          const Text("Peso em quilos"),
                           TextField(
                             controller: pesoController,
                             keyboardType: TextInputType.number,
@@ -62,10 +63,13 @@ class _MainPageState extends State<PagePrincipal> {
                         TextButton(
                             onPressed: () async {
                               await imcRepository.adicionar(Imc(
-                                  int.parse(alturaController.text),
+                                  double.parse(alturaController.text),
                                   double.parse(pesoController.text)));
-                              print(pesoController.text);
-                              print(alturaController.text);
+                              // Calcular o IMC após a adição do objeto Imc
+
+                              //print(pesoController.text);
+                              //print(alturaController.text);
+                              // ignore: use_build_context_synchronously
                               Navigator.pop(context);
                               setState(() {});
                             },
@@ -75,20 +79,28 @@ class _MainPageState extends State<PagePrincipal> {
                   });
             }),
         body: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: Colors.red,
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Apenas não concluidos",
-                        style: TextStyle(fontSize: 18),
+                Card(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 50),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Lista de IMC:",
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.red[900]),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 Expanded(
@@ -103,9 +115,19 @@ class _MainPageState extends State<PagePrincipal> {
                           obter();
                         },
                         key: Key(imc.getId()),
-                        child: ListTile(
-                          title: Text("Altura: ${imc.getAltura().toString()}"),
-                          subtitle: Text("Peso: ${imc.getPeso().toString()}"),
+                        child: Card(
+                          child: ListTile(
+                            title:
+                                Text("Altura: ${imc.getAltura().toString()}"),
+                            subtitle: Text("Peso: ${imc.getPeso().toString()}"),
+                            trailing: Column(
+                              children: [
+                                Text("IMC: ${imc.calcularIMC(imc).toString()}"),
+                                Text(
+                                    "Classificação: ${imc.classificarIMC(imc).toString()}"),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
